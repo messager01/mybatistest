@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    password: root
+    username: root
+    # 针对 8版本以上的驱动需要 指定时区
+    url: jdbc:mysql://127.0.0.1:3306/liaoke_mybatis?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8
+    # 针对 8版本以上的驱动需要 需要指定新的驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+#  配置mybatis 配置文件
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml

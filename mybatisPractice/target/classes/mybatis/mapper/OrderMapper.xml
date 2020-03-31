@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spx.mapper.OrderMapper">
+
+    
+    <!--<resultMap id="orderMap" type="Order">
+        <id column="order_id" property="orderId"/>
+        <result column="order_name" property="orderName"/>
+        <result column="order_num" property="orderNum"/>
+
+        <result column="cust_id" property="customer.custId"/>
+        <result column="cust_name" property="customer.custName"/>
+        <result column="cust_profession" property="customer.custProfession"/>
+        <result column="cust_phone" property="customer.custPhone"/>
+        <result column="email" property="customer.email"/>
+    </resultMap>-->
+
+    <resultMap id="orderMap" type="Order">
+        <id column="order_id" property="orderId"/>
+        <result column="order_name" property="orderName"/>
+        <result column="order_num" property="orderNum"/>
+        <association property="customer" javaType="Customer">
+            <id column="cust_id" property="custId"/>
+            <result column="cust_name" property="custName"/>
+            <result column="cust_profession" property="custProfession"/>
+            <result column="cust_phone" property="custPhone"/>
+            <result column="email" property="email"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getAllOrder" resultMap="orderMap">
+      SELECT * from `order` as o LEFT JOIN `customer` as c ON o.cust_id=c.cust_id
+    </select>
+
+
+    <!--  分步查询  在 association 中选择要查询的新的 mapper 接口，并选择 column 将其作为参数传入-->
+    <!-- association 还支持 延迟加载  不用到关联对象 就不会发送sql  -->
+    <!--  关联的为一个对象 用association -->
+    <resultMap id="resultMap2" type="Order">
+        <id column="order_id" property="orderId"/>
+        <result column="order_name" property="orderName"/>
+        <result column="order_num" property="orderNum"/>
+        <association property="customer" javaType="Customer"
+                     select="com.spx.mapper.CustomerMapper.getCustomerById"
+                     column="cust_id">
+        </association>
+    </resultMap>
+
+    <select id="getOrderWithId" resultMap="resultMap2">
+        select * from `order` where order_id = #{id}
+    </select>
+
+
+    <insert id="insertOrder">
+      insert into `order` (order_name,order_num,cust_id)
+      values (#{orderName},#{orderNum},#{customer.custId})
+    </insert>
+</mapper>
